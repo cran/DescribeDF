@@ -1,5 +1,5 @@
 #'@title Descriptive Statistics of a Data Frame
-#' @description This function (df_descstat) will give descriptive statistics for a data frame (df) excluding the first column. First column mentions different statistics. Other columns are the Statistics values of the particular column (series).
+#'
 #' @param df Data Frame with first column as serial number or date
 #' @import dplyr, psych, e1071, stats
 #'
@@ -39,7 +39,7 @@
 # Descriptive Statistics ####
 df_descstat <- function(df) {
 
-  df <- df[, -1]  # remove first column
+  df <- df[, -1, drop = FALSE]  # remove first column
 
   stats <- c('N', 'Minimum', 'Maximum', 'Mean', 'SD', 'Cond_SD', 'CV(%)',
              'Skewness', 'Kurtosis', 'Shapiro-Wilk')
@@ -211,7 +211,7 @@ df_nonlinearity <- function(df) {
 
 df_stationarity <- function(df) {
   # This function will give a list of three data frames: 'ADF', 'PP', 'KPSS'
-  # This function will also indicated whether the data is stationary or not.
+  # This function will also indicate whether the data is stationary or not.
   # The data frame must contain serieal number or date or anything in the 1st column
   # This function will exclude the 1st column of the data frame and will perform tests on other columns
   # Get column names

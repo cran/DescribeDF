@@ -1,4 +1,3 @@
-exportPattern("^[[:alpha:]]+")
 export(df_descstat)
 export(df_stationarity)
 export(df_nonlinearity)
