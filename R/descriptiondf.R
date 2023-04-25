@@ -231,16 +231,25 @@ df_stationarity <- function(df) {
   # Apply tests to each column and store results in data frames
   for (col in cols) {
     adf_res <- suppressWarnings(adf.test(df[, col]))
-    adf_stationary <- ifelse(adf_res$p.value <= 0.01, "Yes***", "No***")
-    adf_df[[col]] <- c(round(adf_res$statistic, 3), adf_res$parameter, round(adf_res$p.value, 3), adf_stationary)
+    adf_pvalue <- adf_res$p.value
+    adf_stationary <- ifelse(adf_pvalue <= 0.01, "Yes***",
+                             ifelse(adf_pvalue >= 0.01 & adf_pvalue <= 0.05, "Yes**",
+                                    ifelse(adf_pvalue >= 0.05 & adf_pvalue <= 0.1, "Yes*", "No")))
+    adf_df[[col]] <- c(round(adf_res$statistic, 3), adf_res$parameter, round(adf_pvalue, 3), adf_stationary)
 
     pp_res <- suppressWarnings(pp.test(df[, col]))
-    pp_stationary <- ifelse(pp_res$p.value <= 0.01, "Yes***", "No***")
-    pp_df[[col]] <- c(round(pp_res$statistic, 3), pp_res$parameter, round(pp_res$p.value, 3), pp_stationary)
+    pp_pvalue <- pp_res$p.value
+    pp_stationary <- ifelse(pp_pvalue <= 0.01, "Yes***",
+                            ifelse(pp_pvalue >= 0.01 & pp_pvalue <= 0.05, "Yes**",
+                                   ifelse(pp_pvalue >= 0.05 & pp_pvalue <= 0.1, "Yes*", "No")))
+    pp_df[[col]] <- c(round(pp_res$statistic, 3), pp_res$parameter, round(pp_pvalue, 3), pp_stationary)
 
     kpss_res <- suppressWarnings(kpss.test(df[, col]))
-    kpss_stationary <- ifelse(kpss_res$p.value >= 0.01, "Yes***", "No***")
-    kpss_df[[col]] <- c(round(kpss_res$statistic, 3), kpss_res$parameter, round(kpss_res$p.value, 3), kpss_stationary)
+    kpss_pvalue <- kpss_res$p.value
+    kpss_stationary <- ifelse(kpss_pvalue <= 0.01, "No***",
+                              ifelse(kpss_pvalue >= 0.01 & kpss_pvalue <= 0.05, "No**",
+                                     ifelse(kpss_pvalue >= 0.05 & kpss_pvalue <= 0.1, "No*", "Yes")))
+    kpss_df[[col]] <- c(round(kpss_res$statistic, 3), kpss_res$parameter, round(kpss_pvalue, 3), kpss_stationary)
   }
 
   # Combine data frames into a list
