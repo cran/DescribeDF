@@ -30,10 +30,15 @@
 #'df_descstat(df)
 #' @references
 #' \itemize{
-#'\item Garai, S., & Paul, R. K. (2023). Development of MCS based-ensemble models using CEEMDAN decomposition and machine intelligence. Intelligent Systems with Applications, 18, 200202.
+#' \item Paul, R. K., & Garai, S. (2021). Performance comparison of wavelets-based machine learning technique for forecasting agricultural commodity prices. Soft Computing, 25(20), 12857-12873.
 
-#' \item Garai, S., Paul, R. K., Rakshit, D., Yeasin, M., Paul, A. K., Roy, H. S., Barman, S. & Manjunatha, B. (2023). An MRA Based MLR Model for Forecasting Indian Annual Rainfall Using Large Scale Climate Indices. International Journal of Environment and Climate Change, 13(5), 137-150.
+#' \item Paul, R. K., & Garai, S. (2022). Wavelets based artificial neural network technique for forecasting agricultural prices. Journal of the Indian Society for Probability and Statistics, 23(1), 47-61.
 
+#' \item Garai, S., & Paul, R. K. (2023). Development of MCS based-ensemble models using CEEMDAN decomposition and machine intelligence. Intelligent Systems with Applications, 18, 200202.
+
+#' \item Garai, S., Paul, R. K., Rakshit, D., Yeasin, M., Paul, A. K., Roy, H. S., Barman & Manjunatha, B. (2023). An MRA Based MLR Model for Forecasting Indian Annual Rainfall Using Large Scale Climate Indices. International Journal of Environment and Climate Change, 13(5), 137-150.
+
+#' \item Garai, S. ., Paul, R. K. ., Kumar, M. ., & Choudhury, A. (2023). Intra-Annual National Statistical Accounts Based on Machine Learning Algorithm. Journal of Data Science and Intelligent Systems, 00(00), 1-9.
 #' }
 
 # Descriptive Statistics ####
@@ -54,11 +59,11 @@ df_descstat <- function(df) {
     p_value <- sw_test$p.value
     sw_stat <- round(sw_test$statistic, 3)
 
-    if (p_value <= 0.01) {
+    if (p_value < 0.01) {
       shapiro_wilk <- "***"
-    } else if (p_value <= 0.05) {
+    } else if (p_value < 0.05) {
       shapiro_wilk <- "**"
-    } else if (p_value <= 0.1) {
+    } else if (p_value < 0.1) {
       shapiro_wilk <- "*"
     } else {
       shapiro_wilk <- ""
@@ -143,11 +148,11 @@ df_nonlinearity <- function(df) {
       for (k in seq_len(ncol(p))) {
         if (is.na(p[j, k])) {
           stats[j, k] <- paste0(stats[j,], "na")
-        } else if (p[j, k] <= 0.01) {
+        } else if (p[j, k] < 0.01) {
           stats[j, k] <- paste0(stats[j,], "***")
-        } else if (p[j, k] <= 0.05) {
+        } else if (p[j, k] < 0.05) {
           stats[j, k] <- paste0(stats[j,], "**")
-        } else if (p[j, k] <= 0.1) {
+        } else if (p[j, k] < 0.1) {
           stats[j, k] <- paste0(stats[j,], "*")
         } else {
           stats[j, k] <- stats[j,]
@@ -232,23 +237,23 @@ df_stationarity <- function(df) {
   for (col in cols) {
     adf_res <- suppressWarnings(adf.test(df[, col]))
     adf_pvalue <- adf_res$p.value
-    adf_stationary <- ifelse(adf_pvalue <= 0.01, "Yes***",
-                             ifelse(adf_pvalue >= 0.01 & adf_pvalue <= 0.05, "Yes**",
-                                    ifelse(adf_pvalue >= 0.05 & adf_pvalue <= 0.1, "Yes*", "No")))
+    adf_stationary <- ifelse(adf_pvalue < 0.01, "Yes***",
+                             ifelse(adf_pvalue >= 0.01 & adf_pvalue < 0.05, "Yes**",
+                                    ifelse(adf_pvalue >= 0.05 & adf_pvalue < 0.1, "Yes*", "No")))
     adf_df[[col]] <- c(round(adf_res$statistic, 3), adf_res$parameter, round(adf_pvalue, 3), adf_stationary)
 
     pp_res <- suppressWarnings(pp.test(df[, col]))
     pp_pvalue <- pp_res$p.value
-    pp_stationary <- ifelse(pp_pvalue <= 0.01, "Yes***",
-                            ifelse(pp_pvalue >= 0.01 & pp_pvalue <= 0.05, "Yes**",
-                                   ifelse(pp_pvalue >= 0.05 & pp_pvalue <= 0.1, "Yes*", "No")))
+    pp_stationary <- ifelse(pp_pvalue < 0.01, "Yes***",
+                            ifelse(pp_pvalue >= 0.01 & pp_pvalue < 0.05, "Yes**",
+                                   ifelse(pp_pvalue >= 0.05 & pp_pvalue < 0.1, "Yes*", "No")))
     pp_df[[col]] <- c(round(pp_res$statistic, 3), pp_res$parameter, round(pp_pvalue, 3), pp_stationary)
 
     kpss_res <- suppressWarnings(kpss.test(df[, col]))
     kpss_pvalue <- kpss_res$p.value
-    kpss_stationary <- ifelse(kpss_pvalue <= 0.01, "No***",
-                              ifelse(kpss_pvalue >= 0.01 & kpss_pvalue <= 0.05, "No**",
-                                     ifelse(kpss_pvalue >= 0.05 & kpss_pvalue <= 0.1, "No*", "Yes")))
+    kpss_stationary <- ifelse(kpss_pvalue < 0.01, "No***",
+                              ifelse(kpss_pvalue >= 0.01 & kpss_pvalue < 0.05, "No**",
+                                     ifelse(kpss_pvalue >= 0.05 & kpss_pvalue < 0.1, "No*", "Yes")))
     kpss_df[[col]] <- c(round(kpss_res$statistic, 3), kpss_res$parameter, round(kpss_pvalue, 3), kpss_stationary)
   }
 
